@@ -868,11 +868,16 @@ fetch-data $HOST || logit ERROR "Could not fetch data from $HOST"
 Remote Scripts:
 ----------------------------------------------------------
 #!/bin/sh
-for i in 192.168.33.2
+for i in 192.168.56.75
 do
   df=`ssh $i "df -Pl"`
   echo "$df"
-  echo "$df" | awk '/^\/dev/{sub(/%/,"",$5); if ($5 > 95) print $5}'
+  mount_val=`echo "$df" | awk '/^\/dev/{sub(/%/,"",$5); print $5}'`
+  echo "Current Volume Size - " $mount_val
+  if [ $mount_val -gt 95 ]
+  then
+    echo "Send the Mail"
+  fi
 done
 
 -------------------------------------------------------------------
